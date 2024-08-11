@@ -21,7 +21,14 @@ class ExpenseItem extends StatelessWidget {
               children: [
                 Text(
                     '\₹${expense.amount.toStringAsFixed(2)}'), // 12.34532 => 12.34, \ => can use the dolar sign to display on the screen
-                Row(),    
+                const Spacer(),    
+                Row(
+                  children: [
+                    Icon(categoryIcons[expense.category]),
+                    const SizedBox(width: 8),
+                    Text(expense.formattedDate)
+                  ],
+                ),    
               ],
             ),
           ],
