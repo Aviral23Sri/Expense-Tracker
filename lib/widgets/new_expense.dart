@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class NewExpense extends StatefulWidget {
   const NewExpense({super.key});
@@ -10,9 +11,24 @@ class NewExpense extends StatefulWidget {
 }
 
 class _NewExpenseState extends State<NewExpense> {
-  var _enteredTitle = '';
-  void _saveTitleInput(String inputValue) {
-    _enteredTitle = inputValue;
+  final _titleController = TextEditingController();
+  final _amountcontroller = TextEditingController();
+
+  void presentDatePicker() {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    showDatePicker(
+        context: context,
+        initialDate: now,
+        firstDate: firstDate,
+        lastDate: now);
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _amountcontroller.dispose();
+    super.dispose();
   }
 
   @override
@@ -22,7 +38,7 @@ class _NewExpenseState extends State<NewExpense> {
       child: Column(
         children: [
           TextField(
-            onChanged: _saveTitleInput,
+            controller: _titleController,
             maxLength: 40,
             decoration: const InputDecoration(
               label: Text('Title'),
@@ -30,11 +46,52 @@ class _NewExpenseState extends State<NewExpense> {
           ),
           Row(
             children: [
+              Expanded(
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: _amountcontroller,
+                  maxLength: 6,
+                  decoration: const InputDecoration(
+                    prefixText: '₹',
+                    label: Text('Amount'),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('Selected Date'),
+                    IconButton(
+                      onPressed: presentDatePicker,
+                      icon: const Icon(
+                        Icons.calendar_month,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: [
               ElevatedButton(
-                  onPressed: () {
-                    print(_enteredTitle);
-                  },
-                  child: const Text('Save Expense'))
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  print(_titleController.text);
+                  print(_amountcontroller.text);
+                },
+                child: const Text('Save Expense'),
+              ),
             ],
           ),
         ],
